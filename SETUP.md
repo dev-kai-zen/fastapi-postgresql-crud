@@ -42,4 +42,31 @@ _Terminal_
 _Terminal_
 `git init`
 
+_Terminal_
+`git add .`
 
+_Terminal_
+`git commit -m "initial commit"`
+
+## Create `main.py`
+
+_Terminal_
+`touch main.py`
+
+## Update the `main.py`
+
+```
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/")
+def read_root():
+    return {"message": "Hello World"}
+
+```
+
+# You can immediately access `swagger` & `openapi`
+
+- Swagger: `localhost:800/docs`
+- OpenApi: `localhost:800/openapi.json`
