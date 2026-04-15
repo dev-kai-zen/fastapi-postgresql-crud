@@ -28,7 +28,7 @@ sample_data = [
     },
     {
         "campaign_id": 3,
-        "name": "Campaign 3",
+        "name": "Campaign 3 ",
         "due_date": datetime.now(),
         "created_at": datetime.now()
     }
