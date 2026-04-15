@@ -1,10 +1,5 @@
 # fastapi-postgresql-crud
 
-# Links
-
-FASTAPI: https://fastapi.tiangolo.com/
-PYDANTIC: https://pydantic.dev/
-
 # Setup
 
 ## Create vitrual environment
@@ -36,6 +31,17 @@ _Terminal_
 
 _Terminal_
 `pip freeze > requirements.txt`
+
+## Install Package (Requirements)
+
+- Add the package in `requirements.txt`
+  _Terminal_
+  `pip install -r requirements.txt`
+- Or install the package first, then update the `requirements.txt`
+  _Terminal_
+  `pip install package_name`
+  _Terminal_
+  `pip freeze > requirements.txt`
 
 ## If no repository
 
