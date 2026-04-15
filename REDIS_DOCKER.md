@@ -272,3 +272,122 @@ docker compose up -d redis
 | In `REDIS_URL`   | **Host** port (`6380`), not `6379` |
 
 If connection fails, check: container is running, `-p` mapping, firewall, and that your app uses **`localhost` + host port** when running **on the host** (not `6379` unless you published that).
+
+---
+
+## How to access your Redis instance
+
+You can use the **redis-cli** tool to connect to your Redis instance and run commands.
+
+### 1. How to install `redis-cli`
+
+#### On Linux (Ubuntu/Debian):
+
+```bash
+sudo apt-get update
+sudo apt-get install redis-tools
+```
+
+#### On macOS (using Homebrew):
+
+```bash
+brew install redis
+```
+
+#### On Windows:
+
+- The official Redis distribution does not include a Windows-native version, but you can get `redis-cli` from the [Memurai](https://www.memurai.com/downloads) or [Microsoft archive](https://github.com/microsoftarchive/redis/releases).
+- Alternatively, use [WSL2](https://learn.microsoft.com/en-us/windows/wsl/) (Windows Subsystem for Linux) to install Ubuntu and then use the Linux method above.
+
+  **Using Chocolatey** (alternative for Windows):
+
+  ```powershell
+  choco install redis-cli
+  ```
+
+### 2. Connect to Redis
+
+- **From your host (replace `6380` with your port):**
+
+  ```bash
+  redis-cli -h 127.0.0.1 -p 6380
+  ```
+
+  If your Redis server has a password, specify it with the `-a` option:
+
+  ```bash
+  redis-cli -h 127.0.0.1 -p 6380 -a yoursecret
+  ```
+
+- **Directly from inside the container:**
+
+  ```bash
+  docker exec -it app-redis redis-cli
+  ```
+
+### 3. Example commands
+
+Once connected (via `redis-cli` prompt):
+
+```text
+ping
+set foo "bar"
+get foo
+```
+
+You should see `PONG` for `ping` and `bar` for `get foo` if everything is set up correctly.
+
+---
+
+## How to view Redis in a GUI
+
+For a visual interface to explore your Redis database, you can use a GUI client like **RedisInsight** (official, free for local use), or alternatives such as **Another Redis Desktop Manager (RDM)**.
+
+### RedisInsight (recommended)
+
+#### On Linux:
+
+- Download from: https://redis.com/redis-enterprise/redis-insight/
+- You will get a `.AppImage` or `.deb` file.  
+  Navigate the folder of the AppImage location
+  - For `.AppImage`:
+    ```bash
+    chmod +x ./redisinsight-*-x86_64.AppImage
+    ./redisinsight-*-x86_64.AppImage
+    ```
+  - For `.deb` (Debian/Ubuntu):
+    ```bash
+    sudo dpkg -i redisinsight-*-x86_64.deb
+    ```
+    Then launch from your app menu or with `redisinsight`.
+
+#### On macOS:
+
+- Download the `.dmg` from https://redis.com/redis-enterprise/redis-insight/
+- Open the `.dmg` and drag RedisInsight to Applications.
+- Launch RedisInsight from Applications.
+
+#### On Windows:
+
+- Download the `.exe` installer from https://redis.com/redis-enterprise/redis-insight/
+- Run the installer. Launch RedisInsight from the Start menu.
+
+#### Connecting to your Redis instance
+
+- **Host:** `127.0.0.1`
+- **Port:** `6380` (or the host port you mapped)
+- **Password:** (leave blank if not set, or enter your Redis password if you have one)
+
+Add the connection in RedisInsight for local Redis or for any Redis instance accessible from your machine.
+
+---
+
+### Alternative GUIs
+
+- [Another Redis Desktop Manager (RDM)](https://github.com/uglide/RedisDesktopManager/) — Open-source, Windows/Mac/Linux.
+- [Medis](https://github.com/luin/medis) — macOS, open-source.
+
+Most Redis GUI clients have a similar connection setup:  
+Specify your mapped host (`127.0.0.1`), port, and password if set.
+
+These tools let you explore keys, run commands, and view data in a visual interface.

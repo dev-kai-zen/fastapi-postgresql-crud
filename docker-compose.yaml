@@ -18,6 +18,17 @@ services:
     volumes:
       - fastapi_redisdata:/data
     command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+  api:
+    build: .
+    container_name: backend-api
+    ports:
+      - "${API_PUBLISH_PORT:-8000}:8000"
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB}
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
+    depends_on:
+      - database
+      - redis
 
 volumes:
   fastapi_pgdata:

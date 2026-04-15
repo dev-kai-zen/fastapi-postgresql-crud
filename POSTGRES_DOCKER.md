@@ -284,6 +284,48 @@ If you change `POSTGRES_PUBLISH_PORT`, update `DATABASE_URL` (and any `psql` / `
 
 ---
 
+## Reset dev data (destructive)
+
+Postgres **initializes users and the data directory only on first start** of a **new** volume. If you change `POSTGRES_USER` / `POSTGRES_PASSWORD` / `POSTGRES_DB` in `.env` after the volume already exists, the old cluster is unchanged—connections can fail with **role does not exist** or **password authentication failed**.
+
+To wipe the named volume and let Postgres init again with your **current** `.env`:
+
+1. Stop and remove containers (Compose v2):
+
+   ```bash
+   docker compose down
+   ```
+
+2. Find the exact Postgres volume name (Compose prefixes it with the **project name**, usually the folder name):
+
+   ```bash
+   docker volume ls | grep pg
+   ```
+
+   Example name: `fastapi-postgresql-crud_fastapi_pgdata` (yours may differ).
+
+3. Remove that volume (**all data in that database is lost**):
+
+   ```bash
+   docker volume rm fastapi-postgresql-crud_fastapi_pgdata
+   ```
+
+   Use the name from step 2, not the example, if they differ.
+
+4. Start the stack again so Postgres runs init scripts on a fresh volume:
+
+   ```bash
+   docker compose up -d
+   ```
+
+**Optional one-liner** (only if your project reliably uses that volume name—confirm with `docker volume ls` first):
+
+```bash
+docker compose down && docker volume rm fastapi-postgresql-crud_fastapi_pgdata && docker compose up -d
+```
+
+---
+
 ## Quick reference
 
 | Where             | Port                             |
