@@ -1,30 +1,27 @@
-from collections.abc import Callable
-from typing import cast
+from contextlib import asynccontextmanager
 
-from fastapi import Depends, FastAPI
-import redis
-from sqlalchemy import text
-from sqlalchemy.orm import Session
+from fastapi import FastAPI
 
-from app.db import get_db
-from app.redis_client import get_redis
-
-app = FastAPI()
+from app.config import get_settings
+from app.routes import register_v1_routes
 
 
-@app.get("/")
-def read_root():
-    return {"message": "Hello World"}
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    settings = get_settings()
+    if settings.environment == "development":
+        from app.db import engine
+        from app.features.crud.models.items_model import Base
+
+        Base.metadata.create_all(bind=engine)
+    yield
 
 
-@app.get("/db-ping")
-def db_ping(db: Session = Depends(get_db)):
-    one = db.execute(text("SELECT 1")).scalar_one()
-    return {"ok": True, "select_1": one}
+def create_app() -> FastAPI:
+    settings = get_settings()
+    app = FastAPI(title=settings.app_name, lifespan=lifespan)
+    app.include_router(register_v1_routes(), prefix=settings.api_v1_prefix)
+    return app
 
 
-@app.get("/redis-ping")
-def redis_ping(r: redis.Redis = Depends(get_redis)):
-    # Yes, even when using a shared pool, you use the dependency the same way.
-    pong = cast(Callable[[], bool], r.ping)()
-    return {"ok": True, "ping": pong}
+app = create_app()
