@@ -9,6 +9,11 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY app ./app
+COPY alembic.ini .
+COPY alembic ./alembic
+
+# So `alembic` and `from app.config import …` resolve when WORKDIR is /app
+ENV PYTHONPATH=/app
 
 EXPOSE 8000
 

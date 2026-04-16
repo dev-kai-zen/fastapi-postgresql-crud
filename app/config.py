@@ -13,6 +13,7 @@ class Settings(BaseSettings):
 
     app_name: str  # from env APP_NAME
     environment: str = "development"
+    debug: bool = False
 
     api_v1_prefix: str = "/api/v1"
 

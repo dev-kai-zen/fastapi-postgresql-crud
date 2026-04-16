@@ -10,10 +10,9 @@ from app.routes import register_v1_routes
 async def lifespan(app: FastAPI):
     settings = get_settings()
     if settings.environment == "development":
-        from app.db import engine
-        from app.features.crud.models.items_model import Base
+        from app.db import init_development_tables
 
-        Base.metadata.create_all(bind=engine)
+        init_development_tables()
     yield
 
 
