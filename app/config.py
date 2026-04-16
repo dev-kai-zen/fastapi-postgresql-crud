@@ -11,9 +11,11 @@ class Settings(BaseSettings):
         extra="ignore",
     )
     database_url: str  # from env DATABASE_URL
+    redis_url: str  # from env REDIS_URL
 
     # If not database_url
     # database_url: str = Field(validation_alias="CUSTOM_DATABASE_URL")
+    # redis_url: str = Field(validation_alias="CUSTOM_REDIS_URL")
 
 
 # Env / .env supply fields; pyright cannot see that at call time.
